@@ -40,7 +40,7 @@ func (d AuthRepositoryDb) PasswordMatch(rp string, dbp string) *errs.Exception {
 }
 
 func (d AuthRepositoryDb) FindBy(username string, password string) (*Login, *errs.Exception) {
-	findBySql := `SELECT users.id, users.name, users.slug, users.password, roles.name as roleName FROM users LEFT JOIN model_has_roles ON users.id = model_has_roles.model_id INNER JOIN roles ON model_has_roles.role_id = roles.id WHERE users.email = ?`
+	findBySql := `SELECT users.id, users.name, users.slug, users.password, roles.name as roleName FROM users LEFT OUTER JOIN model_has_roles ON users.id = model_has_roles.model_id LEFT OUTER JOIN roles ON model_has_roles.role_id = roles.id WHERE users.email = ?`
 
 	var login Login
 

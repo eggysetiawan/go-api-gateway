@@ -8,7 +8,7 @@ import (
 )
 
 type IAuthService interface {
-	//Login(username string, password string) (*dto.LoginResponse, *errs.Exception)
+	Login(username string, password string) (*dto.LoginResponse, *errs.Exception)
 	Register(request dto.RegisterRequest) *errs.Exception
 }
 
@@ -30,16 +30,9 @@ func (s DefaultAuthService) Login(username string, password string) (*dto.LoginR
 		return nil, err
 	}
 
-	response := dto.LoginResponse{
-		Id:    login.Id,
-		Name:  login.Name,
-		Slug:  login.Slug,
-		Token: token,
-		Role:  login.RoleName,
-	}
+	response := login.ToDto(token)
 
 	return &response, nil
-
 }
 
 func (s DefaultAuthService) Register(request dto.RegisterRequest) *errs.Exception {

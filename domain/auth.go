@@ -1,6 +1,8 @@
 package domain
 
 import (
+	"database/sql"
+	"github.com/eggysetiawan/go-api-gateway/dto"
 	"github.com/eggysetiawan/go-api-gateway/errs"
 	"github.com/golang-jwt/jwt/v4"
 	"time"
@@ -11,11 +13,28 @@ const TOKEN_EXPIRATION = 3 * time.Hour
 const HMAC_KEY_SECRET = "verythoughtsecret"
 
 type Login struct {
-	Id       string `db:"id"`
-	Name     string `db:"name"`
-	Slug     string `db:"slug"`
-	Password string `db:"password"`
-	RoleName string `db:"roleName"`
+	Id       string         `db:"id"`
+	Name     string         `db:"name"`
+	Slug     string         `db:"slug"`
+	Password string         `db:"password"`
+	RoleName sql.NullString `db:"roleName"`
+}
+
+func (l Login) ToDto(token *string) dto.LoginResponse {
+	return dto.LoginResponse{
+		Id:    l.Id,
+		Name:  l.Name,
+		Slug:  l.Slug,
+		Token: token,
+		Role:  l.Role(),
+	}
+}
+
+func (l Login) Role() string {
+	if !l.RoleName.Valid {
+		return ""
+	}
+	return l.RoleName.String
 }
 
 func (l Login) GenerateToken() (*string, *errs.Exception) {

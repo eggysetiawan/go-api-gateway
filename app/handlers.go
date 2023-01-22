@@ -16,7 +16,7 @@ func Start() {
 
 	ah := AuthHandler{service.NewAuthService(domain.NewAuthRepositoryDb(db))}
 
-	//route.HandleFunc("/api/login", ah.Login)
+	route.HandleFunc("/api/login", ah.Login).Methods(http.MethodPost).Name("login")
 	route.HandleFunc("/api/register", ah.Register)
 
 	log.Panic(http.ListenAndServe("localhost:9000", route))
