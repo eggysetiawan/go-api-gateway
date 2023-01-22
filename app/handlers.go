@@ -1,16 +1,24 @@
 package app
 
 import (
-	"fmt"
+	"github.com/eggysetiawan/go-api-gateway/config"
+	"github.com/eggysetiawan/go-api-gateway/domain"
+	"github.com/eggysetiawan/go-api-gateway/service"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 )
 
 func Start() {
-	fmt.Println("Server starting")
+	route := mux.NewRouter()
 
-	mux := mux.NewRouter()
+	db := config.NewDatabaseConnection()
 
-	log.Panic(http.ListenAndServe("localhost:8000", mux))
+	ah := AuthHandler{service.NewAuthService(domain.NewAuthRepositoryDb(db))}
+
+	//route.HandleFunc("/api/login", ah.Login)
+	route.HandleFunc("/api/register", ah.Register)
+
+	log.Panic(http.ListenAndServe("localhost:9000", route))
 
 }
