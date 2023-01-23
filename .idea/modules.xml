@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/api-gateway.iml" filepath="$PROJECT_DIR$/.idea/api-gateway.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../be-wpe/.idea/be-wpe.iml" filepath="$PROJECT_DIR$/../be-wpe/.idea/be-wpe.iml" />
     </modules>
   </component>
 </project>

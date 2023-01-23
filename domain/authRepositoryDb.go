@@ -47,6 +47,11 @@ func (d AuthRepositoryDb) FindBy(username string, password string) (*Login, *err
 	err := d.client.Get(&login, findBySql, username)
 
 	if err != nil {
+
+		if err == sql.ErrNoRows {
+			return nil, errs.NewUnprocessableEntityException("Username atau password salah")
+		}
+
 		return nil, errs.NewUnexpectedException("error while querying users " + err.Error())
 	}
 

@@ -30,7 +30,9 @@ func (s DefaultAuthService) Login(username string, password string) (*dto.LoginR
 		return nil, err
 	}
 
-	response := login.ToDto(token)
+	login.Token = token
+
+	response := login.ToDto()
 
 	return &response, nil
 }

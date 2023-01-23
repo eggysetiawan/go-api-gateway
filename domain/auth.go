@@ -18,14 +18,15 @@ type Login struct {
 	Slug     string         `db:"slug"`
 	Password string         `db:"password"`
 	RoleName sql.NullString `db:"roleName"`
+	Token    *string
 }
 
-func (l Login) ToDto(token *string) dto.LoginResponse {
+func (l Login) ToDto() dto.LoginResponse {
 	return dto.LoginResponse{
 		Id:    l.Id,
 		Name:  l.Name,
 		Slug:  l.Slug,
-		Token: token,
+		Token: l.Token,
 		Role:  l.Role(),
 	}
 }
