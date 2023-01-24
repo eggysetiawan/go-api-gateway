@@ -25,11 +25,29 @@ func Start() {
 
 	rh := RoutingHandler{service.NewApiRoutingService(domain.NewRoutingRepositoryApi(client, clientAddress))}
 
-	route.HandleFunc("/api/routings", rh.indexRouting).Methods(http.MethodGet)
-	route.HandleFunc("/api/routings", rh.storeRouting).Methods(http.MethodPost)
-	route.HandleFunc("/api/routings/{uuid}", rh.showRouting).Methods(http.MethodGet)
-	route.HandleFunc("/api/routings/{uuid}/edit", rh.updateRouting).Methods(http.MethodPut)
-	route.HandleFunc("/api/routings/{uuid}/delete", rh.deleteRouting).Methods(http.MethodDelete)
+	api := route.PathPrefix("/api").Subrouter()
+
+	am := AuthMiddleware{}
+	api.Use(am.AuthorizationHandler())
+
+	api.HandleFunc("/routings", rh.indexRouting).Methods(http.MethodGet)
+	api.HandleFunc("/routings", rh.storeRouting).Methods(http.MethodPost)
+	api.HandleFunc("/routings/{uuid}", rh.showRouting).Methods(http.MethodGet)
+	api.HandleFunc("/routings/{uuid}/edit", rh.updateRouting).Methods(http.MethodPut)
+	api.HandleFunc("/routings/{uuid}/delete", rh.deleteRouting).Methods(http.MethodDelete)
+
+	//middleware
+
+	//example middleware
+	//route.Use(func(next http.Handler) http.Handler {
+	//	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	//		//before
+	//		next.ServeHTTP(w, r)
+	//		//	after
+	//	})
+	//})
+	//
+	//route.Use(am.AuthorizationHandler())
 
 	log.Panic(http.ListenAndServe("localhost:9000", route))
 

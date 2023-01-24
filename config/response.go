@@ -50,10 +50,34 @@ func NewUnexpectedResponse(message string) Response {
 		Data:    []string{},
 	}
 }
+
 func NewBadRequestResponse(message string) Response {
 	return Response{
 		Message: message,
 		Code:    http.StatusBadRequest,
+		Data:    []string{},
+	}
+}
+
+func NewForbiddenResponse(message string) Response {
+	return Response{
+		Message: message,
+		Code:    http.StatusForbidden,
+		Data:    []string{},
+	}
+}
+
+func NewUnauthorizedResponse(message string) Response {
+	return Response{
+		Message: message,
+		Code:    http.StatusUnauthorized,
+		Data:    []string{},
+	}
+}
+func NewUnauthenticated(message string) Response {
+	return Response{
+		Message: message,
+		Code:    http.StatusUnauthorized,
 		Data:    []string{},
 	}
 }

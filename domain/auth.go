@@ -5,6 +5,7 @@ import (
 	"github.com/eggysetiawan/go-api-gateway/dto"
 	"github.com/eggysetiawan/go-api-gateway/errs"
 	"github.com/golang-jwt/jwt/v4"
+	"net/http"
 	"time"
 )
 
@@ -68,4 +69,8 @@ type IAuthRepository interface {
 	FindBy(username string, password string) (*Login, *errs.Exception)
 	Save(r Register) *errs.Exception
 	EmailExists(e string) *errs.Exception
+}
+
+type IAuthMiddleware interface {
+	AuthorizationHandler() func(handler http.Handler) http.Handler
 }
