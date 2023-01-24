@@ -4,6 +4,7 @@ import (
 	"github.com/eggysetiawan/go-api-gateway/config"
 	"github.com/eggysetiawan/go-api-gateway/dto"
 	"github.com/eggysetiawan/go-api-gateway/errs"
+	"net/http"
 )
 
 type Routing struct {
@@ -23,6 +24,7 @@ type RoutingResponse struct {
 }
 
 type IRoutingRepository interface {
+	clientError(resp *http.Response) *errs.Exception
 	FindAllRoutings() ([]Routing, *errs.Exception)
 	FindRoutingBy(uuid string) (*Routing, *errs.Exception)
 	Save(request dto.RoutingRequest) *errs.Exception

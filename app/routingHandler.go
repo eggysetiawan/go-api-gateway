@@ -105,7 +105,11 @@ func (rh *RoutingHandler) updateRouting(w http.ResponseWriter, r *http.Request) 
 	resp, errApi := rh.service.UpdateRouting(request, uuid)
 
 	if errApi != nil {
-		config.JsonResponse(w, resp.Code, resp)
+		response := config.NewUnexpectedResponse(errApi.Message)
+
+		response.Code = errApi.Code
+
+		config.JsonResponse(w, response.Code, response)
 
 		return
 	}

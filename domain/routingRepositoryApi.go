@@ -15,6 +15,21 @@ type DefaultRoutingRepositoryApi struct {
 	address string
 }
 
+func (a DefaultRoutingRepositoryApi) clientError(resp *http.Response) *errs.Exception {
+	if resp.StatusCode >= 400 {
+		var response config.Response
+
+		err := json.NewDecoder(resp.Body).Decode(&response)
+
+		if err != nil {
+			return errs.NewUnexpectedException("Error while parsing error body " + err.Error())
+		}
+
+		return errs.NewException(response.Message, response.Code)
+	}
+	return nil
+}
+
 func (a DefaultRoutingRepositoryApi) FindRoutingBy(uuid string) (*Routing, *errs.Exception) {
 	url := a.address + "/api/routings/" + uuid
 
@@ -35,6 +50,10 @@ func (a DefaultRoutingRepositoryApi) FindRoutingBy(uuid string) (*Routing, *errs
 	}
 
 	defer resp.Body.Close()
+
+	if clientError := a.clientError(resp); clientError != nil {
+		return nil, clientError
+	}
 
 	err = json.NewDecoder(resp.Body).Decode(&routing)
 
@@ -66,6 +85,10 @@ func (a DefaultRoutingRepositoryApi) FindAllRoutings() ([]Routing, *errs.Excepti
 	}
 
 	defer resp.Body.Close()
+
+	if clientError := a.clientError(resp); clientError != nil {
+		return nil, clientError
+	}
 
 	err = json.NewDecoder(resp.Body).Decode(&routings)
 
@@ -101,6 +124,10 @@ func (a DefaultRoutingRepositoryApi) Save(request dto.RoutingRequest) *errs.Exce
 	response, err := a.client.Do(newRequest)
 
 	defer response.Body.Close()
+
+	if clientError := a.clientError(response); clientError != nil {
+		return clientError
+	}
 
 	if err != nil {
 		return errs.NewUnexpectedException("Error when sending request " + err.Error())
@@ -139,6 +166,10 @@ func (a DefaultRoutingRepositoryApi) Update(request dto.RoutingRequest, uuid str
 		return nil, errs.NewUnexpectedException("Error while sending request to client " + err.Error())
 	}
 
+	if clientError := a.clientError(response); clientError != nil {
+		return nil, clientError
+	}
+
 	var resp config.Response
 
 	json.NewDecoder(response.Body).Decode(&resp)
@@ -171,6 +202,10 @@ func (a DefaultRoutingRepositoryApi) Destroy(uuid string) (*config.Response, *er
 
 	if err != nil {
 		return nil, errs.NewUnexpectedException("Error while parsing response body " + err.Error())
+	}
+
+	if clientError := a.clientError(resp); clientError != nil {
+		return nil, clientError
 	}
 
 	return &response, nil
